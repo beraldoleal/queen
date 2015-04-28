@@ -1,5 +1,9 @@
 - hosts: all
 
+- name: Copy custom facts to machines required by queen
+  template: src=
+
+
   tasks:
      - template: src=templates/list_groups.j2 dest=/etc/ansible/facts.d/list_groups.fact mode="0766"
      - template: src=templates/is_virtual.j2 dest=/etc/ansible/facts.d/is_virtual.fact mode="0766"
