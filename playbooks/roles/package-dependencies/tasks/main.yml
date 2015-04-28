@@ -1,0 +1,9 @@
+# Install packages dependencies needed by queen.
+
+
+- name: Install Packages
+  apt: name={{ item }} state=present
+  with_items:
+    - facter
+    - virt-what
+
