@@ -10,21 +10,14 @@ is_virt="True"
 if [ -z "${VIRT_WHAT_OUTPUT}" ]; then
     is_virt="False"
 fi
-{% set is_first = True%}
+
+{% set all = group_names|list + ['all'] %}
+
+{{ all }}
+
 cat<<EOF
 {
     "is_virtual": "${is_virt}",
-    "groups" : [
-{% for key,value  in groups.iteritems()  %}
-    {% if  inventory_hostname in value and is_first %}
-        "{{ key }}"
-        {% set is_first = False%}
-    {% else %}
-        {% if  inventory_hostname in value and not is_first %}
-            ,"{{ key }}"
-        {% endif %}
-    {% endif %}
-{% endfor %}
-]
+    "groups":{{ all|replace("\'","\"") }}
 }
 EOF
