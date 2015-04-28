@@ -2,7 +2,5 @@
   hosts: all 
  
   roles: 
-    - custom-facts
-    - package-dependencies
-
-
+    - queen-custom-facts
+    - queen-dependencies
