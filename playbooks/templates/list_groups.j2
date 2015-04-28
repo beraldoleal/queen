@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cat<<EOF
+{
+    "groups" : [
+{% for key, value in groups.iteritems()  %}
+    {% if inventory_hostname  in  value  %}
+        "{{ key }}"
+        {% if not loop.last %}
+            ,
+        {% endif %}
+    {% endif %}
+{% endfor %}
+]
+}
+EOF
