@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# The virt-what tool is used once facter is not able to provide correct 
+# information if the current machine is virtual or not
+
+VIRT_WHAT_OUTPUT=$(/usr/sbin/virt-what)
+
+is_virt="True"
+
+if [ -z "${VIRT_WHAT_OUTPUT}" ]; then
+	is_virt="False"
+fi
+
+cat<<EOF
+{
+	"is_virtual": "${is_virt}",
+	"groups" : [
+{% for key, value in groups.iteritems()  %}
+    {% if inventory_hostname  in  value  %}
+        "{{ key }}"
+        {% if not loop.last %}
+		,
+	{% endif %}
+    {% endif %}
+{% endfor %}
+]
+}
+EOF

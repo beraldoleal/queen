@@ -1,0 +1,8 @@
+- name: apply queen's needed custom configuration to all host
+  hosts: all 
+ 
+  roles: 
+    - custom-facts
+    - package-dependencies
+
+
