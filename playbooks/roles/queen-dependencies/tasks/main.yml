@@ -6,3 +6,5 @@
   with_items:
     - facter
     - virt-what
+  tags:
+    - queen
