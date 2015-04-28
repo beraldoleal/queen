@@ -3,8 +3,12 @@
 
 - name: Creates custom facts directory
   file: path=/etc/ansible/facts.d state=directory mode=0744
+  tags:
+    - queen
 
 
 - name: Copy custom facts to machines required by queen
   template: src=queen_custom_facts.j2 dest=/etc/ansible/facts.d/queen_custom_facts.fact mode=0744
+  tags:
+    - queen
 

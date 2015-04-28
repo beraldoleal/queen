@@ -1,9 +1,10 @@
 # Install packages dependencies needed by queen.
 
-
+#TODO: Change this task to support non-apt distros.
 - name: Install Packages
   apt: name={{ item }} state=present
   with_items:
     - facter
     - virt-what
-
+  tags:
+    - queen
