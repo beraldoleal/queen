@@ -8,7 +8,6 @@ VIRT_WHAT_OUTPUT=$(/usr/sbin/virt-what)
 is_virt="True"
 
 if [ -z "${VIRT_WHAT_OUTPUT}" ]; then
-  is_virt="False"
 fi
 
 cat<<EOF
