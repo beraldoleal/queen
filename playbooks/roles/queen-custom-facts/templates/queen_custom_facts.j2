@@ -8,21 +8,12 @@ VIRT_WHAT_OUTPUT=$(/usr/sbin/virt-what)
 is_virt="True"
 
 if [ -z "${VIRT_WHAT_OUTPUT}" ]; then
-	is_virt="False"
+  is_virt="False"
 fi
 
 cat<<EOF
 {
-	"is_virtual": "${is_virt}",
-	"groups" : [
-{% for key, value in groups.iteritems()  %}
-    {% if inventory_hostname  in  value  %}
-        "{{ key }}"
-        {% if not loop.last %}
-		,
-	{% endif %}
-    {% endif %}
-{% endfor %}
-]
+  "is_virtual": "${is_virt}",
+  "groups": {{ group_names|list + ['all'] }},
 }
 EOF
