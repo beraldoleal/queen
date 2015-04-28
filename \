@@ -8,10 +8,10 @@ VIRT_WHAT_OUTPUT=$(/usr/sbin/virt-what)
 is_virt="True"
 
 if [ -z "${VIRT_WHAT_OUTPUT}" ]; then
-	is_virt="False"
 fi
 
 {% set all = group_names|list + ['all'] %}
+{{group_names}}
 
 {{all}}
 cat<<EOF

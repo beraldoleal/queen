@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ansible NCC - Unesp</title>
+    <title>queen - An ansible inventory frontend</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -23,10 +23,6 @@
     <div id="wrapper">
 
       <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-          <li class="sidebar-brand"><a href="#">ansible</a></li>
-          <li><a href="#">Test 2</a></li>
-        </ul>
       </div> <!-- /sidebar-wrapper -->
 
       <div id="page-content-wrapper">
@@ -41,14 +37,20 @@
 
       </div> <!-- /page-content-wrapper -->
 
-
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js"></script>
 
+    <script type="text/x-handlebars-template" id="menu-tpl">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand"><a href="#">queen</a></li>
+          {{#each groups}}
+          <li id="{{@key}}" class="active" onclick="populate('{{@key}}');"><a href="#">{{@key}}</a></li>
+          {{/each}}
+        </ul>
+    </script>
 
     <script type="text/x-handlebars-template" id="table">
       <table class="table table-hover table-condensed">
@@ -63,7 +65,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#each contacted}}
+        {{#each hosts}}
         {{#ansible_facts}}
         <tr>
           <td>{{@key}}</td>
@@ -89,7 +91,18 @@
 
         $.getJSON("output.json", function(data) {
 
-          console.log(data);
+          all_groups = {} ;
+          for (var contacted in data.contacted) {
+
+            groups = data.contacted[contacted].ansible_facts.ansible_local.queen_custom_facts.groups;
+
+            for (group in groups) {
+              name = groups[group];
+              if (all_groups[name] === undefined)
+                all_groups[name] = {};
+              all_groups[name][contacted] = data.contacted[contacted];
+            }
+          }
 
           Handlebars.registerHelper('formatUptime', function(seconds) {
             return "aaa";
@@ -100,14 +113,29 @@
             return percent.toFixed(2);
           });
 
-          var source = $("#table").html();
+          /* Create menus */
+          var source = $("#menu-tpl").html();
           var template = Handlebars.compile(source);
-          $("#content").html(template(data));
+          $("#sidebar-wrapper").html(template({"groups": all_groups}));
+
+          /* Populate table */
+          populate('all');
 
         })
         .fail(function(jqXHR, textStatus, errorThrown) { console.log('getJSON request failed! ' + textStatus); });
 
       });
+
+      function populate(group) {
+          hosts = all_groups[group];
+          var source = $("#table").html();
+          var template = Handlebars.compile(source);
+          $("#content").html(template({"hosts": hosts}));
+
+          $("#sidebar-wrapper>ul>li").removeClass("active");
+          $("#sidebar-wrapper>ul>#"+group).addClass("active");
+      }
+
     </script>
   </body>
 </html>
